@@ -96,16 +96,35 @@ class TweetAnalyzer():
     """
     For analysis and cotagorizing tweets 
     """
-    pass
+    def tweets_to_data_frame(self,tweets):
+        df = pd.DataFrame(data=[tweet.text for tweet in tweets],columns=['Tweets'])
+        
+        df['Id'] = np.array([tweet.id for tweet in tweets])
+        df['Len'] = np.array([len(tweet.text) for tweet in tweets])
+        df['Date'] = np.array([tweet.created_at for tweet in tweets])
+        df['Source'] = np.array([tweet.source for tweet in tweets])
+        df['Favorites'] = np.array([tweet.favorite_count for tweet in tweets])
+        df['Retweets'] = np.array([tweet.retweet_count for tweet in tweets])
+        
+        return df
         
 if __name__ == "__main__":
     
+    twitter_client = TwitterClient()
+    tweet_analyzer = TweetAnalyzer()
+    api = twitter_client.get_twitter_client_api()
     
-    hash_tag_list = ['bitcoin','cardano','ethereum']
-    fetched_tweets_filename = 'tweets.json'
+    tweets = api.user_timeline(screen_name='thejackforge', count=10)
     
-    # twitter_streamer = TwitterStreamer()
-    # twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list)
-
-    twitter_client = TwitterClient('pycon')
-    print(twitter_client.get_user_timeline_tweets(1))
+    # print(dir(tweets[0]))
+    
+    print((tweets[0].id))
+          
+          
+          
+    df = tweet_analyzer.tweets_to_data_frame(tweets)
+    print(df.head(10))
+    
+  
+    
+    
