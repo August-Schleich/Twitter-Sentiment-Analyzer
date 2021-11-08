@@ -114,7 +114,7 @@ if __name__ == "__main__":
     tweet_analyzer = TweetAnalyzer()
     api = twitter_client.get_twitter_client_api()
     
-    tweets = api.user_timeline(screen_name='joerogan', count=100)
+    tweets = api.user_timeline(screen_name='thejackforge', count=100)
     
           
           
@@ -135,6 +135,12 @@ if __name__ == "__main__":
     
     # time_likes = pd.Series(data=df['likes'].values ,index=df['date'])
     # time_likes.plot(figsize=(16,4),color='r')
+    
     # plt.show()
     
-   
+    time_likes = pd.Series(data=df['likes'].values ,index=df['date'])
+    time_likes.plot(figsize=(16,4), label='likes', legend=True)
+    
+    time_retweets = pd.Series(data=df['retweets'].values ,index=df['date'])
+    time_retweets.plot(figsize=(16,4), label='retweets', legend=True)
+    plt.show()
