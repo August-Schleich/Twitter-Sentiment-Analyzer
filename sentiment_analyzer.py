@@ -4,10 +4,14 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler 
 from tweepy import Stream 
 
+from textblob import TextBlob
+
+import re
 import twitter_credentials 
 import numpy as np 
 import pandas as pd 
 import matplotlib.pyplot as plt
+
 #### Twitter Client #####
 
 class TwitterClient():
@@ -96,16 +100,32 @@ class TweetAnalyzer():
     """
     For analysis and cotagorizing tweets 
     """
-    def tweets_to_data_frame(self,tweets):
-        df = pd.DataFrame(data=[tweet.text for tweet in tweets],columns=['Tweets'])
+    
+    def clean_tweet(self,tweet):
         
+         return ' '.join(re.sub("([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+        
+    def analyze_sentiment(self,tweet):
+        analysis = TextBlob(self.clean_tweet(tweet))
+
+        if analysis.sentiment.polarity > 0:
+            return 1
+        elif analysis.sentiment.polarity == 0 :
+            return 0
+        else:
+            return -1
+  
+        
+        
+    def tweets_to_data_frame(self,tweets):
+        df = pd.DataFrame(data=[tweet.text for tweet in tweets],columns=['tweets'])
         df['Id'] = np.array([tweet.id for tweet in tweets])
+       
         df['len'] = np.array([len(tweet.text) for tweet in tweets])
         df['date'] = np.array([tweet.created_at for tweet in tweets])
         df['source'] = np.array([tweet.source for tweet in tweets])
         df['likes'] = np.array([tweet.favorite_count for tweet in tweets])
         df['retweets'] = np.array([tweet.retweet_count for tweet in tweets])
-       
         
         return df
         
@@ -113,36 +133,14 @@ if __name__ == "__main__":
     
     twitter_client = TwitterClient()
     tweet_analyzer = TweetAnalyzer()
+    
     api = twitter_client.get_twitter_client_api()
     
-    tweets = api.user_timeline(screen_name='joerogan', count=100)
-    
-          
-          
-        
+    tweets = api.user_timeline(screen_name='thepsf')
     df = tweet_analyzer.tweets_to_data_frame(tweets)
-    # print(df.head(10))
+    df['sentiment'] = np.array([tweet_analyzer.analyze_sentiment(tweet) for tweet in df['tweets']])
     
-    # Get average length over all tweets is.
-    print(np.mean(df['len']))
   
-    # Get the number of likes for the most liked tweet.
-    print(np.max(df['likes']))
+    print(df.head(10))
+ 
   
-    # Get the number of retweets for the most retweeted tweet.
-    print(np.max(df['retweets']))
-    
-    # Time Series
-    
-    # time_likes = pd.Series(data=df['likes'].values ,index=df['date'])
-    # time_likes.plot(figsize=(16,4),color='r')
-    # plt.show()
-    
-    time_likes = pd.Series(data=df['likes'].values ,index=df['date'])
-    time_likes.plot(figsize=(16,4), label='likes', legend=True)
-    
-    time_retweets = pd.Series(data=df['retweets'].values ,index=df['date'])
-    time_retweets.plot(figsize=(16,4), label='retweets', legend=True)
-    
-   
-    plt.show('Joerogan chart')
