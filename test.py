@@ -147,11 +147,12 @@ if __name__ == "__main__":
     
     # twitter_client = TwitterClient('pycon')
     # print(twitter_client.get_home_timeline_tweets(1))
-    count = (int(0))
+    count= 0
     for i in tweets:
-        count + 1
+        count+=1
+        print('Tweet: ' + str(count))
         print(i.text)
-        print('\n')
         
+
     
         
