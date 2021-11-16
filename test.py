@@ -103,7 +103,7 @@ class TweetAnalyzer():
     """
    
     def tweets_to_data_frame(self,tweets):
-        df = pd.DataFrame(data=[tweet.text for tweet in tweets],columns=['Tweets'])
+        df = pd.DataFrame(data=[tweet.full_text for tweet in tweets],columns=['tweets'])
         
      
     
@@ -127,7 +127,7 @@ class TweetAnalyzer():
         
 if __name__ == "__main__":
     
-    tweet_mode = 'extended'
+    
     fetched_tweets_filename = 'tweets.json'
     
     twitter_client = TwitterClient()
@@ -135,24 +135,35 @@ if __name__ == "__main__":
     
     api = twitter_client.get_twitter_client_api()
      
-    tweets = api.user_timeline(screen_name='pycon',count=10)
+    tweets = api.user_timeline(screen_name='pycon',count=10, include_rts= False,tweet_mode = "extended")
    
    
     df = tweet_analyzer.tweets_to_data_frame(tweets)
     
-    df = pd.DataFrame(data=[tweet.text for tweet in tweets],columns=['tweets'])
-
-    # print(df.head(5))
+    print(dir(tweets[0]))
+    df = pd.DataFrame(data=[tweet.full_text for tweet in tweets],columns=['tweets'])
+    pd.set_option('display.max_colwidth', 0)
+    print('\n')
+    print(df.head(5))
     
     
-    # twitter_client = TwitterClient('pycon')
-    # print(twitter_client.get_home_timeline_tweets(1))
-    count= 0
-    for i in tweets:
-        count+=1
-        print('Tweet: ' + str(count))
-        print(i.text)
+  
+  
+  ### PRINTS FULLTEXT OF TWEETS ####
+    # count= 0
+    # for i in tweets:
+    #     count+=1
+    #     print('Tweet: '+ str(count),':'  + i.full_text)
         
 
-    
+            # the screen name of the user
+    screen_name = "thejackforge"
+  
+    # fetching the user
+    user = api.get_user(screen_name)
+  
+    # fetching the statuses_count attribute
+    statuses_count = user.statuses_count 
+  
+    print("The number of statuses the user has posted are : " + str(statuses_count))
         
