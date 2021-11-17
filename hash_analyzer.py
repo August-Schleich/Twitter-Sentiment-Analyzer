@@ -4,6 +4,8 @@ from tweepy import OAuthHandler
 import twitter_credentials 
 from textblob import TextBlob
 import sys, tweepy
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from tweepy import api
 # from tweepy import Cursor
@@ -19,9 +21,9 @@ def percentage(part,whole):
 
     
    
-auth = OAuthHandler(twitter_credentials.CONSUMER_KEY,twitter_credentials.CONSUMER_SECRETE)
+auth = tweepy.OAuthHandler(twitter_credentials.CONSUMER_KEY,twitter_credentials.CONSUMER_SECRETE)
 auth.set_access_token(twitter_credentials.ACCESS_TOKEN,twitter_credentials.ACCESS_TOKEN_SECRET)
-api= tweepy.API(auth)
+api= tweepy.API(auth,wait_on_rate_limit=True)
 
 
 
@@ -85,7 +87,7 @@ sizes = [positive, neutral, negative, ]
 
 colors = ['m', 'gold','red']
 
-patches, texts = plt.pie(sizes, colors=colors, startangle=90,normalize=False)
+patches, texts = plt.pie(sizes, colors=colors, startangle=90)
 
 plt.legend(patches,labels, loc="best")
 plt.suptitle("how people are reacting on " + searchTerm + " by analyzing " + str(noOfSearchTerms) + '  Tweets.')
