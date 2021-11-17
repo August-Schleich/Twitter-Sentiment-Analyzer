@@ -33,7 +33,7 @@ api= tweepy.API(auth,wait_on_rate_limit=True)
 search_term =input("Enter Keyword/Hashtag to search: ")
 # noOfSearchTerms= int(input("Enter how many tweets to analyze: "))
 
-tweets = tweepy.Cursor(api.search, q=search_term, lang='en', since= '2021-11-05', tweet_mode='extended').items(200)
+tweets = tweepy.Cursor(api.search, q=search_term, lang='en', since= '2021-11-05', tweet_mode='extended').items(100)
 
 # store tweets in variable
 
@@ -109,7 +109,7 @@ df['sentiment'] = df['polarity'].apply(getSentiment)
 
 plt.figure(figsize=(10,8))
 for i in range(0,df.shape[0]):
-    df['sentiment'].value_counts().plot(kind='bar')       
+    df['sentiment'].value_counts().plot(kind='bar', color=['blue', 'green', 'red'])       
 plt.title('Sentiment Analysis of Bitcoin')
 plt.xlabel('Sentiment')
 plt.ylabel('Number of Tweets')
